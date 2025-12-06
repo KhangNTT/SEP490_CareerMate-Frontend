@@ -10,7 +10,6 @@ import { ProfileDropdown } from "@/components/profile/ProfileDropdown";
 import UserTypeSelectionModal from "@/components/auth/UserTypeSelectionModal";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { getCurrentUser } from "@/lib/user-api";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function CandidateHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -200,9 +199,6 @@ export default function CandidateHeader() {
                   For Candidate {userInfo?.username || username || user?.username || "abc"}
                 </span>
 
-                {/* Theme Toggle Button */}
-                <ThemeToggle />
-
                 <ProfileDropdown
                   userName={userInfo?.username || username || user?.username || userInfo?.name || user?.email || "User"}
                   userEmail={userInfo?.email || user?.email}
@@ -212,9 +208,6 @@ export default function CandidateHeader() {
               </>
             ) : (
               <>
-                {/* Theme Toggle Button */}
-                <ThemeToggle />
-                
                 <Link
                   href="/sign-in"
                   className="px-4 py-2 text-white hover:text-gray-300 transition-colors"

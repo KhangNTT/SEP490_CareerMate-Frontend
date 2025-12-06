@@ -466,6 +466,12 @@ function ScheduleInterviewContent() {
       return;
     }
 
+    // Validate that the selected time is in the future
+    if (isTimeSlotPast(form.scheduledDate, form.scheduledTime)) {
+      toast.error("Cannot schedule an interview in the past. Please select a future time.");
+      return;
+    }
+
     const { isReschedule: isRescheduleMode, interview: interviewData } = interviewRef.current;
     if (!isRescheduleMode && (!form.jobApplyId || form.jobApplyId === 0)) {
       toast.error("Invalid job application. Please try again.");
@@ -477,21 +483,45 @@ function ScheduleInterviewContent() {
       const scheduledDateTime = formatScheduledDateTime(form.scheduledDate, form.scheduledTime);
 
       if (isRescheduleMode && interviewData) {
-        const updateRequest: UpdateInterviewRequest = {
-          scheduledDate: scheduledDateTime,
-          durationMinutes: form.durationMinutes,
-          interviewType: form.interviewType as 'IN_PERSON' | 'VIDEO_CALL' | 'PHONE' | 'ONLINE_ASSESSMENT',
-          location: form.location || undefined,
-          meetingLink: form.meetingLink || undefined,
-          interviewerName: form.interviewerName || undefined,
-          interviewerEmail: form.interviewerEmail || undefined,
-          interviewerPhone: form.interviewerPhone || undefined,
-          preparationNotes: form.notes || undefined,
-          updateReason: 'Rescheduled by recruiter',
-        };
+        // Check if interview is in a final state (COMPLETED, CANCELLED, NO_SHOW)
+        // If so, we need to create a NEW interview (next round) instead of updating
+        const finalStatuses = ['COMPLETED', 'CANCELLED', 'NO_SHOW'];
+        const isInterviewFinalized = finalStatuses.includes(interviewData.status);
+        
+        if (isInterviewFinalized) {
+          // Create a new interview for the next round
+          const nextRound = (interviewData.interviewRound || 1) + 1;
+          await scheduleInterview(interviewData.jobApplyId, {
+            scheduledDate: scheduledDateTime,
+            durationMinutes: form.durationMinutes,
+            interviewType: form.interviewType as 'IN_PERSON' | 'VIDEO_CALL' | 'PHONE' | 'ONLINE_ASSESSMENT',
+            location: form.location || undefined,
+            meetingLink: form.meetingLink || undefined,
+            interviewerName: form.interviewerName || undefined,
+            interviewerEmail: form.interviewerEmail || undefined,
+            interviewerPhone: form.interviewerPhone || undefined,
+            preparationNotes: form.notes || undefined,
+            interviewRound: nextRound,
+          });
+          toast.success(`Interview round ${nextRound} scheduled successfully!`);
+        } else {
+          // Interview is still active (SCHEDULED, CONFIRMED, RESCHEDULED) - update it
+          const updateRequest: UpdateInterviewRequest = {
+            scheduledDate: scheduledDateTime,
+            durationMinutes: form.durationMinutes,
+            interviewType: form.interviewType as 'IN_PERSON' | 'VIDEO_CALL' | 'PHONE' | 'ONLINE_ASSESSMENT',
+            location: form.location || undefined,
+            meetingLink: form.meetingLink || undefined,
+            interviewerName: form.interviewerName || undefined,
+            interviewerEmail: form.interviewerEmail || undefined,
+            interviewerPhone: form.interviewerPhone || undefined,
+            preparationNotes: form.notes || undefined,
+            updateReason: 'Rescheduled by recruiter',
+          };
 
-        await updateInterview(interviewData.id, updateRequest);
-        toast.success("Interview rescheduled successfully!");
+          await updateInterview(interviewData.id, updateRequest);
+          toast.success("Interview rescheduled successfully!");
+        }
       } else {
         await scheduleInterview(form.jobApplyId, {
           scheduledDate: scheduledDateTime,
@@ -567,6 +597,50 @@ function ScheduleInterviewContent() {
     const compareDate = new Date(date);
     compareDate.setHours(0, 0, 0, 0);
     return compareDate < today;
+  }
+
+  /**
+   * Check if a specific time slot is in the past
+   * For today's date, compare with current time
+   */
+  function isTimeSlotPast(dateStr: string, timeStr: string): boolean {
+    const now = new Date();
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    
+    // Parse the date string (YYYY-MM-DD format)
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const slotDate = new Date(year, month - 1, day, hours, minutes);
+    
+    return slotDate <= now;
+  }
+
+  /**
+   * Check if all working hours for a given date have passed
+   * Used to gray out entire day in calendar
+   */
+  function isDayFullyPassed(date: Date): boolean {
+    const now = new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0);
+    
+    // If date is before today, it's fully passed
+    if (compareDate < today) {
+      return true;
+    }
+    
+    // If date is after today, it's not passed
+    if (compareDate > today) {
+      return false;
+    }
+    
+    // For today, check if current time is past the last work hour (8 PM / 20:00)
+    const lastWorkHour = 20; // Default end hour
+    const endOfWorkday = new Date(date);
+    endOfWorkday.setHours(lastWorkHour, 0, 0, 0);
+    
+    return now >= endOfWorkday;
   }
 
   /**
@@ -708,7 +782,7 @@ function ScheduleInterviewContent() {
                 {weekDates.map((date, index) => {
                   const dateStr = formatDateForAPI(date);
                   const isSelected = selectedDate === dateStr;
-                  const disabled = isPast(date);
+                  const disabled = isDayFullyPassed(date);
 
                   return (
                     <button
@@ -740,8 +814,16 @@ function ScheduleInterviewContent() {
                     <Label>Time Slots</Label>
                     <div className="flex items-center gap-3 text-xs flex-wrap">
                       <span className="flex items-center gap-1">
+                        <span className="w-3 h-3 rounded bg-gray-200 border border-gray-300 opacity-50"></span>
+                        Past
+                      </span>
+                      <span className="flex items-center gap-1">
                         <span className="w-3 h-3 rounded bg-green-100 border border-green-300"></span>
                         Available
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <span className="w-3 h-3 rounded bg-orange-100 border border-orange-300"></span>
+                        🍽️ Lunch
                       </span>
                       <span className="flex items-center gap-1">
                         <span className="w-3 h-3 rounded bg-blue-100 border border-blue-300"></span>
@@ -770,6 +852,7 @@ function ScheduleInterviewContent() {
                     <div className="grid grid-cols-4 gap-2">
                       {timeSlots.map((slot) => {
                         const isSelected = form.scheduledTime === slot.time;
+                        const isPastSlot = selectedDate ? isTimeSlotPast(selectedDate, slot.time) : false;
                         
                         // Duration preview
                         let isInDurationPreview = false;
@@ -783,27 +866,38 @@ function ScheduleInterviewContent() {
                         }
                         
                         // Tooltip content
-                        const tooltipContent = slot.interviewCount > 0 
-                          ? `${slot.interviewCount} interview(s): ${slot.interviews.map(i => i.candidateName).join(', ')}`
-                          : 'Available';
+                        const tooltipContent = isPastSlot
+                          ? 'This time has passed'
+                          : slot.isLunchTime
+                            ? 'Lunch break time'
+                            : slot.interviewCount > 0 
+                              ? `${slot.interviewCount} interview(s): ${slot.interviews.map(i => i.candidateName).join(', ')}`
+                              : 'Available';
                         
                         return (
                           <button
                             key={slot.time}
-                            onClick={() => handleTimeSelect(slot.time)}
+                            onClick={() => !isPastSlot && handleTimeSelect(slot.time)}
+                            disabled={isPastSlot}
                             title={tooltipContent}
                             className={`
                               p-3 rounded-lg border text-sm font-medium transition-all relative
-                              ${isSelected 
-                                ? "bg-primary text-primary-foreground border-primary ring-2 ring-primary ring-offset-2" 
-                                : isInDurationPreview
-                                  ? "bg-primary/20 text-primary border-primary/50 border-dashed"
-                                  : getSlotColor(slot, false)
+                              ${isPastSlot
+                                ? "bg-gray-200 border-gray-300 text-gray-400 cursor-not-allowed opacity-50"
+                                : isSelected 
+                                  ? "bg-primary text-primary-foreground border-primary ring-2 ring-primary ring-offset-2" 
+                                  : isInDurationPreview
+                                    ? "bg-primary/20 text-primary border-primary/50 border-dashed"
+                                    : slot.isLunchTime
+                                      ? "border-orange-300 bg-orange-50 hover:bg-orange-100 hover:border-orange-400 text-orange-700"
+                                      : getSlotColor(slot, false)
                               }
-                              ${slot.isLunchTime ? "opacity-90" : ""}
                             `}
                           >
-                            <span>{formatTime(slot.time)}</span>
+                            <div className="flex items-center justify-center gap-1">
+                              {slot.isLunchTime && <span className="text-sm">🍽️</span>}
+                              <span>{formatTime(slot.time)}</span>
+                            </div>
                             
                             {/* Selected checkmark */}
                             {isSelected && (
@@ -820,22 +914,17 @@ function ScheduleInterviewContent() {
                             )}
                             
                             {/* Overlap indicator - 2+ people icon (purple) */}
-                            {!isSelected && !isInDurationPreview && slot.interviewCount >= 2 && (
+                            {!isSelected && !isInDurationPreview && !slot.isLunchTime && slot.interviewCount >= 2 && (
                               <span className="absolute -top-1 -right-1 w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
                                 <Users className="w-3 h-3 text-white" />
                               </span>
                             )}
                             
-                            {/* Single interview indicator (blue) - includes own interview */}
-                            {!isSelected && !isInDurationPreview && slot.interviewCount === 1 && (
+                            {/* Single interview indicator (blue) */}
+                            {!isSelected && !isInDurationPreview && !slot.isLunchTime && slot.interviewCount === 1 && (
                               <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
                                 <User className="w-2.5 h-2.5 text-white" />
                               </span>
-                            )}
-                            
-                            {/* Lunch indicator (small, subtle) */}
-                            {slot.isLunchTime && (
-                              <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 text-[8px]">🍽️</span>
                             )}
                           </button>
                         );

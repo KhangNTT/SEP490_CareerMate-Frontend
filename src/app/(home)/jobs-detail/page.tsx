@@ -601,18 +601,18 @@ ${jobData.recruiterInfo?.about || 'N/A'}
 
   return (
     <>
-      <div className="min-h-screen bg-background pt-20">
+      <div className="min-h-screen bg-gray-50 pt-16">
         {/* Search Bar Section */}
-        <div className="py-4 bg-background">
+        <div className="py-3 bg-gray-50">
           <div className="mx-auto max-w-7xl px-4 md:px-6">
-            <div className="bg-card border border-border shadow-sm rounded-xl p-4">
+            <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-4">
               <div className="flex flex-col md:flex-row gap-3">
                 {/* Location Dropdown */}
                 <div className="relative flex-shrink-0">
                   <select
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className="appearance-none w-full md:w-64 pl-10 pr-10 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-card cursor-pointer text-foreground"
+                    className="appearance-none w-full md:w-64 pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white cursor-pointer text-gray-700"
                   >
                     git add src/app/(home)/jobs-detail/page.tsx
                     <option value="Ho Chi Minh">Ho Chi Minh</option>
@@ -639,7 +639,7 @@ ${jobData.recruiterInfo?.about || 'N/A'}
                 <div className="relative flex-1">
                   <input
                     type="text"
-                    placeholder="lập trình viên fullstack"
+                    placeholder="Fullstack Developer"
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyword(e.target.value)}
                     className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
@@ -664,11 +664,11 @@ ${jobData.recruiterInfo?.about || 'N/A'}
                 </button>
               </div>
 
-              {/* Filter Bar */}
-              <div className="flex flex-wrap items-center gap-3 mt-4">
+              {/* Filter Bar - Compact Design */}
+              <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-gray-100">
                 {/* Level Dropdown */}
                 <div className="relative">
-                  <select className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white cursor-pointer text-gray-700 text-sm">
+                  <select className="appearance-none pl-3 pr-8 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white cursor-pointer text-gray-700 text-sm font-medium transition-colors">
                     <option>Level</option>
                     <option>Intern</option>
                     <option>Fresher</option>
@@ -678,46 +678,36 @@ ${jobData.recruiterInfo?.about || 'N/A'}
                     <option>Leader</option>
                   </select>
                   <svg
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
 
                 {/* Working Model Dropdown */}
                 <div className="relative">
-                  <select className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white cursor-pointer text-gray-700 text-sm">
-                    <option>Working Model</option>
+                  <select className="appearance-none pl-3 pr-8 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white cursor-pointer text-gray-700 text-sm font-medium transition-colors">
+                    <option>Work Mode</option>
                     <option>Remote</option>
                     <option>Hybrid</option>
                     <option>Onsite</option>
                   </select>
                   <svg
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
 
                 {/* Salary Dropdown */}
                 <div className="relative">
-                  <select className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white cursor-pointer text-gray-700 text-sm">
+                  <select className="appearance-none pl-3 pr-8 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white cursor-pointer text-gray-700 text-sm font-medium transition-colors">
                     <option>Salary</option>
                     <option>Dưới 10 triệu</option>
                     <option>10-15 triệu</option>
@@ -727,24 +717,19 @@ ${jobData.recruiterInfo?.about || 'N/A'}
                     <option>Trên 50 triệu</option>
                   </select>
                   <svg
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
 
                 {/* Job Domain Dropdown */}
                 <div className="relative">
-                  <select className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white cursor-pointer text-gray-700 text-sm">
-                    <option>Job Domain</option>
+                  <select className="appearance-none pl-3 pr-8 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white cursor-pointer text-gray-700 text-sm font-medium transition-colors">
+                    <option>Domain</option>
                     <option>Backend</option>
                     <option>Frontend</option>
                     <option>Fullstack</option>
@@ -754,24 +739,19 @@ ${jobData.recruiterInfo?.about || 'N/A'}
                     <option>Data Science</option>
                   </select>
                   <svg
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
 
-                {/* Filter Button */}
-                <button className="ml-auto flex items-center gap-2 px-4 py-2.5 border border-border rounded-lg hover:bg-muted transition-colors text-muted-foreground text-sm">
-                  <IoFilterOutline className="w-5 h-5" />
-                  Filter
+                {/* Clear Filters Button */}
+                <button className="ml-auto flex items-center gap-1.5 px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-sm">
+                  <FiX className="w-4 h-4" />
+                  Clear
                 </button>
               </div>
             </div>
@@ -782,13 +762,13 @@ ${jobData.recruiterInfo?.about || 'N/A'}
         <div className="py-4">
           <main className="mx-auto max-w-7xl px-4 md:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <aside className="lg:col-span-5">
-                <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+              <aside className="lg:col-span-5 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-full flex flex-col">
                   {/* Header Section: Title + Job Recommend Button */}
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-foreground">
+                  <div className="flex items-center justify-between mb-4 flex-shrink-0">
+                    <h2 className="text-xl font-bold text-gray-900">
                       Available Jobs{" "}
-                      <span className="text-blue-600">({totalElements})</span>
+                      <span className="text-blue-600 font-semibold">({totalElements})</span>
                     </h2>
 
                     <button
@@ -829,8 +809,8 @@ ${jobData.recruiterInfo?.about || 'N/A'}
                       <p className="text-gray-500">No jobs found</p>
                     </div>
                   ) : (
-                    <>
-                      <div className="space-y-4">
+                    <div className="flex-1 overflow-y-auto">
+                      <div className="space-y-4 pr-1">
                         {jobs.map((job) => (
                           <div
                             key={job.id}
@@ -896,57 +876,56 @@ ${jobData.recruiterInfo?.about || 'N/A'}
                               }
                             )}
                           </div>
-
-                          <button
+                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages - 1}
-                            className="px-4 py-2 border border-border rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             Next
                           </button>
                         </div>
                       )}
-                    </>
+                    </div>
                   )}
                 </div>
               </aside>
 
               <section className="lg:col-span-7">
                 {selectedJob ? (
-                  <div className="sticky top-20 bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+                  <div className="lg:sticky lg:top-20 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden lg:max-h-[calc(100vh-6rem)]">
                     {/* Header with company and job title - Fixed */}
-                    <div className="p-6 border-b border-border">
+                    <div className="p-6 border-b border-gray-100 bg-gradient-to-br from-white to-slate-50">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded-full text-sm font-medium">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="bg-blue-100 text-blue-800 px-3 py-1.5 rounded-full text-sm font-semibold">
                               {selectedJob.company}
                             </span>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-sm text-gray-600">
                               ✓ You will love it
                             </span>
                           </div>
-                          <h1 className="text-2xl font-bold text-foreground mb-2">
+                          <h1 className="text-2xl font-bold text-gray-900 mb-3">
                             {selectedJob.title}
                           </h1>
 
                           {/* NEW: chips ngay dưới tiêu đề */}
-                          <div className="flex flex-wrap gap-2 mb-2">
+                          <div className="flex flex-wrap gap-2.5 mb-4">
                             {selectedJob.salaryRange && (
-                              <span className="salary-badge inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                              <span className="salary-badge inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
                                 <RiMoneyDollarCircleLine size={18} />
                                 {selectedJob.salaryRange}
                               </span>
                             )}
-                            <span className="px-3 py-1 rounded-full text-sm bg-sky-50 text-sky-700 border border-sky-200">
+                            <span className="px-3.5 py-1.5 rounded-full text-sm font-medium bg-sky-50 text-sky-700 border border-sky-200">
                               {selectedJob.workMode}
                             </span>
-                            <span className="px-3 py-1 rounded-full text-sm bg-violet-50 text-violet-700 border border-violet-200">
+                            <span className="px-3.5 py-1.5 rounded-full text-sm font-medium bg-violet-50 text-violet-700 border border-violet-200">
                               {selectedJob.jobType}
                             </span>
                           </div>
 
-                          <p className="text-gray-600 text-sm mb-4 flex items-center gap-1">
+                          <p className="text-gray-500 text-sm flex items-center gap-1.5">
                             <svg
                               className="w-4 h-4 text-blue-600"
                               xmlns="http://www.w3.org/2000/svg"
@@ -1075,10 +1054,10 @@ ${jobData.recruiterInfo?.about || 'N/A'}
                       </div>
                     </div>
 
-                    {/* Scrollable Content Area */}
+                    {/* Scrollable Content Area - scroll riêng trong card */}
                     <div
-                      className="overflow-y-auto"
-                      style={{ maxHeight: "calc(100vh - 280px)" }}
+                      className="overflow-y-auto flex-1"
+                      style={{ maxHeight: "calc(100vh - 22rem)" }}
                     >
                       <div className="p-6">
                         {/* NEW: meta bar tóm tắt compensation */}

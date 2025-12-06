@@ -349,7 +349,7 @@ export const CVCardHorizontal = ({
                         Download
                       </button>
 
-                      <button
+                      {/* <button
                         onClick={(e) => {
                           e.stopPropagation();
                           // Rename logic
@@ -366,7 +366,7 @@ export const CVCardHorizontal = ({
                           />
                         </svg>
                         Rename
-                      </button>
+                      </button> */}
 
                       <hr className="my-1 border-gray-200" />
 

@@ -99,6 +99,7 @@ export async function checkCVBuilderAccess(): Promise<{
 
 /**
  * Check if candidate has access to CV Analyse (ATS) feature
+ * Uses Python API endpoint: api/candidate-entitlement/ai-analyzer-checker
  * Returns access status
  */
 export async function checkCVAnalyseAccess(): Promise<{
@@ -108,7 +109,7 @@ export async function checkCVAnalyseAccess(): Promise<{
     result?: any;
 }> {
     try {
-        const response = await api.get('/api/candidate-entitlement/cv-analyse-checker');
+        const response = await api.get('/api/candidate-entitlement/ai-analyzer-checker');
         const data = response.data || {};
 
         const code = typeof data.code === 'number' ? data.code : null;

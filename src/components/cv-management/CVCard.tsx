@@ -303,7 +303,7 @@ export const CVCard = ({
                     Download
                   </button>
 
-                  <button
+                  {/* <button
                     onClick={(e) => {
                       e.stopPropagation();
                       // Rename logic
@@ -320,7 +320,7 @@ export const CVCard = ({
                       />
                     </svg>
                     Rename
-                  </button>
+                  </button> */}
 
                   <hr className="my-0.5" />
                   {onDelete && (

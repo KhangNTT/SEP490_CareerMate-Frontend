@@ -38,7 +38,7 @@ import {
   getInterviewTypeText,
   type InterviewScheduleResponse
 } from "@/lib/interview-api";
-import { Calendar, Video, MapPin, ExternalLink } from "lucide-react";
+import { Calendar, Video, MapPin, ExternalLink, BriefcaseBusiness } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 // Lazy load tab components for better code splitting
@@ -331,8 +331,9 @@ const MyJobsPage = () => {
           {/* Main Content */}
           <section className="space-y-6 min-w-0 transition-all duration-300">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h1 className="text-2xl font-semibold text-gray-900 mb-6">
-                My Jobs
+              <h1 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                {/* <BriefcaseBusiness className="w-6 h-6" /> */}
+                Job Activities
               </h1>
 
               {/* Tabs */}

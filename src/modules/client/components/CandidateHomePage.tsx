@@ -54,7 +54,7 @@ function AnimatedCounter({ end, duration = 2000, suffix = "" }) {
   }, [isVisible, end, duration]);
 
   return (
-    <span ref={ref} className="text-4xl md:text-5xl font-bold text-muted-foreground">
+    <span ref={ref} className="text-4xl md:text-5xl font-bold text-gray-600">
       {count.toLocaleString()}
       {suffix}
     </span>
@@ -63,7 +63,7 @@ function AnimatedCounter({ end, duration = 2000, suffix = "" }) {
 
 export function CandidateHomePage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <style jsx global>{`
         select {
           direction: ltr !important;
@@ -171,14 +171,14 @@ export function CandidateHomePage() {
         </section>
 
         {/* Quick Stats */}
-        <section className="py-16 bg-background">
+        <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
               <div className="group">
                 <div className="mb-2">
                   <AnimatedCounter end={10000} suffix="+" duration={2500} />
                 </div>
-                <div className="text-muted-foreground text-lg font-sans">
+                <div className="text-gray-600 text-lg font-sans">
                   Active Jobs
                 </div>
               </div>
@@ -186,7 +186,7 @@ export function CandidateHomePage() {
                 <div className="mb-2">
                   <AnimatedCounter end={500} suffix="+" duration={2000} />
                 </div>
-                <div className="text-muted-foreground text-lg font-sans">
+                <div className="text-gray-600 text-lg font-sans">
                   Top Companies
                 </div>
               </div>
@@ -194,7 +194,7 @@ export function CandidateHomePage() {
                 <div className="mb-2">
                   <AnimatedCounter end={50000} suffix="+" duration={3000} />
                 </div>
-                <div className="text-muted-foreground text-lg font-sans">
+                <div className="text-gray-600 text-lg font-sans">
                   Candidates
                 </div>
               </div>
@@ -202,7 +202,7 @@ export function CandidateHomePage() {
                 <div className="mb-2">
                   <AnimatedCounter end={95} suffix="%" duration={1500} />
                 </div>
-                <div className="text-muted-foreground text-lg font-sans">
+                <div className="text-gray-600 text-lg font-sans">
                   Success Rate
                 </div>
               </div>
@@ -214,46 +214,46 @@ export function CandidateHomePage() {
         <TopEmployers />
 
         {/* AI Features Section */}
-        <section className="py-16 bg-muted">
+        <section className="py-16 bg-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-foreground mb-4">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
                 AI-Powered Features
               </h2>
-              <p className="text-xl text-muted-foreground">
+              <p className="text-xl text-gray-600">
                 Get personalized job recommendations and career insights
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-card rounded-lg p-8 text-center shadow-sm border border-border">
-                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white rounded-lg p-8 text-center shadow-sm">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">🤖</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-card-foreground">Smart Matching</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-xl font-semibold mb-4">Smart Matching</h3>
+                <p className="text-gray-600">
                   Our AI analyzes your skills and preferences to find the
                   perfect job matches.
                 </p>
               </div>
 
-              <div className="bg-card rounded-lg p-8 text-center shadow-sm border border-border">
-                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white rounded-lg p-8 text-center shadow-sm">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">📊</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-card-foreground">Career Insights</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-xl font-semibold mb-4">Career Insights</h3>
+                <p className="text-gray-600">
                   Get personalized career advice and market insights to advance
                   your career.
                 </p>
               </div>
 
-              <div className="bg-card rounded-lg p-8 text-center shadow-sm border border-border">
-                <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white rounded-lg p-8 text-center shadow-sm">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">📝</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-card-foreground">CV Analysis</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-xl font-semibold mb-4">CV Analysis</h3>
+                <p className="text-gray-600">
                   Get your CV analyzed by AI to highlight strengths and suggest improvements.
                 </p>
               </div>

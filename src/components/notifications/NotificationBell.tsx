@@ -271,6 +271,11 @@ export function NotificationBell() {
         redirectUrl = '/candidate/interviews';
         console.log('✅ [Candidate] Interview invitation -> /candidate/interviews');
       }
+      else if (eventType === 'INTERVIEW_INVITATION_CONFLICT') {
+        // Interview invitation with scheduling conflict - candidate has another interview at this time
+        redirectUrl = '/candidate/interviews';
+        console.log('⚠️ [Candidate] Interview invitation WITH CONFLICT -> /candidate/interviews');
+      }
       else if (eventType === 'INTERVIEW_REMINDER' || eventType === 'INTERVIEW_REMINDER_24H' || eventType === 'INTERVIEW_REMINDER_2H' || eventType === 'INTERVIEW_REMINDER_24_HOUR' || eventType === 'INTERVIEW_REMINDER_2_HOUR') {
         // Interview reminder (24h or 2h before)
         redirectUrl = '/candidate/interviews';

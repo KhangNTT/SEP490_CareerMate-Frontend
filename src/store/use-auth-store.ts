@@ -35,9 +35,12 @@ type DecodedJWT = {
   roles?: string[];
   authorities?: string[];
   sub?: string;
-  userId?: number;  // Numeric user ID from backend
+  userId?: number;      // Numeric user ID from backend
+  candidateId?: number; // Candidate ID from backend (for ROLE_CANDIDATE)
+  recruiterId?: number; // Recruiter ID from backend (for ROLE_RECRUITER)
   email?: string;
   name?: string;
+  fullname?: string;    // Some tokens use "fullname" instead of "name"
   [k: string]: any;
 };
 
@@ -389,17 +392,30 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         : Date.now() + result.expiresIn * 1000;
       const expiresAt = Math.min(expMs, Date.now() + result.expiresIn * 1000); // an toàn hơn
 
+      // ✅ Extract candidateId directly from JWT token (preferred)
+      // Fallback priority: JWT.candidateId > response.candidateId > null
+      const tokenCandidateId = decoded?.candidateId ?? null;
+      const responseCandidateId = (result as any).candidateId ?? null;
+      const finalCandidateId = tokenCandidateId ?? responseCandidateId;
+
+      console.log("🔵 [AUTH STORE] CandidateId extraction:", {
+        fromToken: tokenCandidateId,
+        fromResponse: responseCandidateId,
+        final: finalCandidateId,
+      });
+
       const userInfo = {
-        id: decoded?.sub ?? null,
+        id: decoded?.userId ?? decoded?.sub ?? null,
         email: decoded?.email ?? email,
         role,
-        name: decoded?.name ?? decoded?.email ?? email,
+        name: decoded?.fullname ?? decoded?.name ?? decoded?.email ?? email,
       };
 
       console.log("🔵 [AUTH STORE] Calling setAuthFromTokens with:", {
         hasToken: !!accessToken,
         tokenLength: accessToken.length,
-        name: decoded?.name ?? decoded?.email ?? email,
+        candidateId: finalCandidateId,
+        name: userInfo.name,
       });
 
       // Đẩy vào action chung (tự lưu localStorage + set timer)
@@ -411,11 +427,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user: userInfo,
       });
 
-      // ✅ Fetch user profile to get real userId
-      // Fire and forget - don't block login flow
-      get().fetchCandidateProfile().catch((err) => {
-        // Silent fail
-      });
+      // ✅ Set candidateId immediately from JWT token
+      if (finalCandidateId) {
+        set({ candidateId: finalCandidateId });
+      } else {
+        // Fallback: Fetch from profile API if not in token
+        get().fetchCandidateProfile().catch((err) => {
+          console.warn("⚠️ [AUTH STORE] fetchCandidateProfile failed:", err);
+        });
+      }
 
       set({ isLoading: false });
       return { success: true, isAdmin };

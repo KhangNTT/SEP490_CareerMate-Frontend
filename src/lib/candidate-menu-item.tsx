@@ -1,5 +1,5 @@
 import React from "react";
-import { Settings } from "lucide-react";
+import { BriefcaseBusiness, FileText, IdCardLanyard, LayoutDashboard, Settings } from "lucide-react";
 
 export type MenuItem = {
   href: string;
@@ -20,37 +20,39 @@ export const candidateMenuItems: MenuItem[] = [
     href: "/dashboard",
     label: "Dashboard",
     key: "dashboard",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <rect x="3" y="3" width="7" height="7" />
-        <rect x="14" y="3" width="7" height="7" />
-        <rect x="14" y="14" width="7" height="7" />
-        <rect x="3" y="14" width="7" height="7" />
-      </svg>
-    ),
+    // icon: (
+    //   <svg
+    //     className="w-5 h-5"
+    //     viewBox="0 0 24 24"
+    //     fill="none"
+    //     stroke="currentColor"
+    //     strokeWidth="2"
+    //   >
+    //     <rect x="3" y="3" width="7" height="7" />
+    //     <rect x="14" y="3" width="7" height="7" />
+    //     <rect x="14" y="14" width="7" height="7" />
+    //     <rect x="3" y="14" width="7" height="7" />
+    //   </svg>
+    // ),
+    icon: <LayoutDashboard className="w-5 h-5" />
   },
   {
     href: "/cv-management",
     label: "CV Management",
     key: "cv-management",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-      </svg>
-    ),
+    // icon: (
+    //   <svg
+    //     className="w-5 h-5"
+    //     viewBox="0 0 24 24"
+    //     fill="none"
+    //     stroke="currentColor"
+    //     strokeWidth="2"
+    //   >
+    //     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    //     <polyline points="14 2 14 8 20 8" />
+    //   </svg>
+    // ),
+    icon: <FileText className="w-5 h-5" />
   },
   {
     href: "/cm-profile",
@@ -71,20 +73,21 @@ export const candidateMenuItems: MenuItem[] = [
   },
   {
     href: "/my-jobs",
-    label: "My Jobs",
+    label: "Job Activities",
     key: "jobs",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-      </svg>
-    ),
+    // icon: (
+    //   <svg
+    //     className="w-5 h-5"
+    //     viewBox="0 0 24 24"
+    //     fill="none"
+    //     stroke="currentColor"
+    //     strokeWidth="2"
+    //   >
+    //     <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+    //     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+    //   </svg>
+    // ),
+    icon: <BriefcaseBusiness className="w-5 h-5" />,
   },
   {
     href: "/interviews",
@@ -131,19 +134,20 @@ export const candidateMenuItems: MenuItem[] = [
     href: "/employments",
     label: "My Employment",
     key: "employments",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <path d="M20 7h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM10 4h4v3h-4V4zm10 16H4V9h16v11z" />
-        <path d="M12 12v4" />
-        <path d="M10 14h4" />
-      </svg>
-    ),
+    // icon: (
+    //   <svg
+    //     className="w-5 h-5"
+    //     viewBox="0 0 24 24"
+    //     fill="none"
+    //     stroke="currentColor"
+    //     strokeWidth="2"
+    //   >
+    //     <path d="M20 7h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM10 4h4v3h-4V4zm10 16H4V9h16v11z" />
+    //     <path d="M12 12v4" />
+    //     <path d="M10 14h4" />
+    //   </svg>
+    // ),
+    icon: <IdCardLanyard className="w-5 h-5" />,
   },
   // Future Feature
   // {

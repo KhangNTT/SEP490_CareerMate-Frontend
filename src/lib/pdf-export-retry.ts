@@ -1,7 +1,20 @@
 /**
  * PDF Export Retry Mechanism
  * 
- * Professional retry logic for downloading CV PDFs with:
+ * @deprecated This module is deprecated as of Dec 2025.
+ * Use the new job-based polling approach instead:
+ * - Hook: useExportPDFJob from "@/hooks/useExportPDFJob"
+ * - API: POST /api/export-pdf/job (create job)
+ * - API: GET /api/export-pdf/job/:jobId (poll status)
+ * 
+ * The retry-based approach caused failures in production because
+ * Puppeteer cold-start and rendering time exceeded the retry timeout.
+ * The new job-based approach handles long-running exports gracefully
+ * with 90-second polling timeout.
+ * 
+ * KEPT FOR REFERENCE - DO NOT USE IN NEW CODE
+ * 
+ * Old features (now deprecated):
  * - Exponential backoff
  * - Client-side timeout
  * - Proper error classification

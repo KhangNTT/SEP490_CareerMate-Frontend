@@ -114,7 +114,7 @@ function AnimatedCounter({ end, duration = 2000, suffix = "" }) {
   }, [isVisible, end, duration]);
 
   return (
-    <span ref={ref} className="text-4xl md:text-5xl font-bold text-muted-foreground">
+    <span ref={ref} className="text-4xl md:text-5xl font-bold text-gray-600">
       {count.toLocaleString()}
       {suffix}
     </span>
@@ -170,23 +170,23 @@ function ReviewCarousel() {
         >
           {USER_REVIEWS.map((review) => (
             <div key={review.id} className="w-full flex-shrink-0 px-4">
-              <div className="bg-card rounded-2xl p-8 shadow-lg border border-border max-w-3xl mx-auto">
-                <Quote className="h-10 w-10 text-blue-100 dark:text-blue-900 mb-4" />
-                <p className="text-muted-foreground text-lg mb-6 italic leading-relaxed">
+              <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 max-w-3xl mx-auto">
+                <Quote className="h-10 w-10 text-blue-100 mb-4" />
+                <p className="text-gray-700 text-lg mb-6 italic leading-relaxed">
                   "{review.review}"
                 </p>
                 <div className="flex items-center gap-4">
                   <img
                     src={review.avatar}
                     alt={review.name}
-                    className="w-14 h-14 rounded-full object-cover border-2 border-blue-100 dark:border-blue-900"
+                    className="w-14 h-14 rounded-full object-cover border-2 border-blue-100"
                     onError={(e) => {
                       e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(review.name)}&background=3b82f6&color=fff`;
                     }}
                   />
                   <div className="flex-1">
-                    <h4 className="font-semibold text-foreground">{review.name}</h4>
-                    <p className="text-muted-foreground text-sm">{review.role}</p>
+                    <h4 className="font-semibold text-gray-900">{review.name}</h4>
+                    <p className="text-gray-500 text-sm">{review.role}</p>
                   </div>
                   {renderStars(review.rating)}
                 </div>
@@ -199,15 +199,15 @@ function ReviewCarousel() {
       {/* Navigation Buttons */}
       <button
         onClick={goToPrevious}
-        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-card rounded-full shadow-lg flex items-center justify-center hover:bg-muted transition-colors border border-border"
+        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors border border-gray-200"
       >
-        <ChevronLeft className="h-6 w-6 text-muted-foreground" />
+        <ChevronLeft className="h-6 w-6 text-gray-600" />
       </button>
       <button
         onClick={goToNext}
-        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-card rounded-full shadow-lg flex items-center justify-center hover:bg-muted transition-colors border border-border"
+        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors border border-gray-200"
       >
-        <ChevronRight className="h-6 w-6 text-muted-foreground" />
+        <ChevronRight className="h-6 w-6 text-gray-600" />
       </button>
 
       {/* Dots Indicator */}
@@ -296,7 +296,7 @@ export function ClientHomePage() {
     loadCompanies();
   }, []);
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <style jsx global>{`
         select {
           direction: ltr !important;
@@ -404,14 +404,14 @@ export function ClientHomePage() {
         </section>
 
         {/* Quick Stats */}
-        <section className="py-16 bg-background">
+        <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
               <div className="group">
                 <div className="mb-2">
                   <AnimatedCounter end={10000} suffix="+" duration={2500} />
                 </div>
-                <div className="text-muted-foreground text-lg font-sans">
+                <div className="text-gray-600 text-lg font-sans">
                   Active Jobs
                 </div>
               </div>
@@ -419,7 +419,7 @@ export function ClientHomePage() {
                 <div className="mb-2">
                   <AnimatedCounter end={500} suffix="+" duration={2000} />
                 </div>
-                <div className="text-muted-foreground text-lg font-sans">
+                <div className="text-gray-600 text-lg font-sans">
                   Top Companies
                 </div>
               </div>
@@ -427,7 +427,7 @@ export function ClientHomePage() {
                 <div className="mb-2">
                   <AnimatedCounter end={50000} suffix="+" duration={3000} />
                 </div>
-                <div className="text-muted-foreground text-lg font-sans">
+                <div className="text-gray-600 text-lg font-sans">
                   Candidates
                 </div>
               </div>
@@ -435,7 +435,7 @@ export function ClientHomePage() {
                 <div className="mb-2">
                   <AnimatedCounter end={95} suffix="%" duration={1500} />
                 </div>
-                <div className="text-muted-foreground text-lg font-sans">
+                <div className="text-gray-600 text-lg font-sans">
                   Success Rate
                 </div>
               </div>
@@ -550,23 +550,23 @@ export function ClientHomePage() {
         </section>
 
         {/* Career Insights Blog Section */}
-        <section className="py-16 bg-muted">
+        <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-10">
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <BookOpen className="h-8 w-8 text-blue-600" />
-                  <h2 className="text-3xl font-bold text-foreground">
+                  <h2 className="text-3xl font-bold text-gray-900">
                     Career Insights
                   </h2>
                 </div>
-                <p className="text-muted-foreground text-lg">
+                <p className="text-gray-600 text-lg">
                   Expert tips and guides for your career journey
                 </p>
               </div>
               <Link 
                 href="/blog"
-                className="px-6 py-3 bg-foreground text-background rounded-lg font-semibold hover:bg-foreground/80 transition-colors flex items-center gap-2"
+                className="px-6 py-3 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors flex items-center gap-2"
               >
                 Read More Articles
                 <ChevronRight className="h-5 w-5" />
@@ -576,13 +576,13 @@ export function ClientHomePage() {
             {isLoadingBlogs ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="bg-card rounded-2xl overflow-hidden shadow-sm border border-border animate-pulse">
-                    <div className="h-48 bg-muted" />
+                  <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
+                    <div className="h-48 bg-gray-200" />
                     <div className="p-6">
-                      <div className="h-6 w-3/4 bg-muted rounded mb-3" />
-                      <div className="h-4 w-full bg-muted rounded mb-2" />
-                      <div className="h-4 w-2/3 bg-muted rounded mb-4" />
-                      <div className="h-4 w-1/2 bg-muted rounded" />
+                      <div className="h-6 w-3/4 bg-gray-200 rounded mb-3" />
+                      <div className="h-4 w-full bg-gray-200 rounded mb-2" />
+                      <div className="h-4 w-2/3 bg-gray-200 rounded mb-4" />
+                      <div className="h-4 w-1/2 bg-gray-200 rounded" />
                     </div>
                   </div>
                 ))}
@@ -593,9 +593,9 @@ export function ClientHomePage() {
                   <Link
                     key={blog.id}
                     href={`/blog/${blog.id}`}
-                    className="group bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-border"
+                    className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
                   >
-                    <div className="relative h-48 overflow-hidden bg-muted">
+                    <div className="relative h-48 overflow-hidden bg-gray-100">
                       {blog.thumbnailUrl ? (
                         <img
                           src={blog.thumbnailUrl}
@@ -606,7 +606,7 @@ export function ClientHomePage() {
                           }}
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900">
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100">
                           <BookOpen className="h-16 w-16 text-blue-300" />
                         </div>
                       )}
@@ -619,13 +619,13 @@ export function ClientHomePage() {
                       )}
                     </div>
                     <div className="p-6">
-                      <h3 className="font-bold text-foreground text-lg mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                      <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
                         {blog.title}
                       </h3>
-                      <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                      <p className="text-gray-500 text-sm mb-4 line-clamp-2">
                         {blog.summary || blog.content?.substring(0, 120) + '...'}
                       </p>
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <div className="flex items-center justify-between text-sm text-gray-400">
                         <span>{blog.authorName || 'CareerMate'}</span>
                         <div className="flex items-center gap-3">
                           <span className="flex items-center gap-1">
@@ -642,24 +642,24 @@ export function ClientHomePage() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No articles available at the moment.</p>
+                <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500">No articles available at the moment.</p>
               </div>
             )}
           </div>
         </section>
 
         {/* User Reviews Carousel */}
-        <section className="py-16 bg-gradient-to-b from-blue-50 to-background dark:from-blue-950 dark:to-background">
+        <section className="py-16 bg-gradient-to-b from-blue-50 to-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <Users className="h-8 w-8 text-blue-600" />
-                <h2 className="text-3xl font-bold text-foreground">
+                <h2 className="text-3xl font-bold text-gray-900">
                   What Our Users Say
                 </h2>
               </div>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
                 Join thousands of professionals who found their dream careers with CareerMate
               </p>
             </div>
@@ -669,46 +669,46 @@ export function ClientHomePage() {
         </section>
 
         {/* AI Features Section */}
-        <section className="py-16 bg-muted">
+        <section className="py-16 bg-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-foreground mb-4">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
                 AI-Powered Features
               </h2>
-              <p className="text-xl text-muted-foreground">
+              <p className="text-xl text-gray-600">
                 Get personalized job recommendations and career insights
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-card rounded-lg p-8 text-center shadow-sm border border-border">
-                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white rounded-lg p-8 text-center shadow-sm">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">🤖</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-card-foreground">Smart Matching</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-xl font-semibold mb-4">Smart Matching</h3>
+                <p className="text-gray-600">
                   Our AI analyzes your skills and preferences to find the
                   perfect job matches.
                 </p>
               </div>
 
-              <div className="bg-card rounded-lg p-8 text-center shadow-sm border border-border">
-                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white rounded-lg p-8 text-center shadow-sm">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">📊</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-card-foreground">Career Insights</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-xl font-semibold mb-4">Career Insights</h3>
+                <p className="text-gray-600">
                   Get personalized career advice and market insights to advance
                   your career.
                 </p>
               </div>
 
-              <div className="bg-card rounded-lg p-8 text-center shadow-sm border border-border">
-                <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white rounded-lg p-8 text-center shadow-sm">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">📝</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-card-foreground">CV Analysis</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-xl font-semibold mb-4">CV Analysis</h3>
+                <p className="text-gray-600">
                   Get your CV analyzed by AI to highlight strengths and suggest improvements.
                 </p>
               </div>

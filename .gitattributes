@@ -1,1 +1,8 @@
 * text eol=lf
+# Treat image files as binary (never modify)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.webp binary

@@ -78,6 +78,7 @@ export interface InterviewScheduleResponse {
   candidateEmail?: string;
   candidateImage?: string;
   // Job fields
+  jobId?: number;
   jobTitle?: string;
   positionTitle?: string; // Alias for jobTitle
   // Company fields (for candidate view)

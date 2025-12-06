@@ -54,12 +54,12 @@ export default function DraftConversionDialog({
 
         <div className="py-4">
           <p className="text-gray-600 mb-4">
-            Bạn đang có CV chưa lưu. Bạn có muốn lưu CV này thành <strong>bản nháp (Draft)</strong> trước khi chuyển sang CV khác không?
+            You have an unsaved CV. Would you like to save this CV as a <strong>Draft</strong> before switching to another CV?
           </p>
           <p className="text-sm text-gray-500">
-            • Chọn <strong>&quot;Save as Draft&quot;</strong> để lưu CV hiện tại
+            • Select <strong>&quot;Save as Draft&quot;</strong> to save your current CV
             <br />
-            • Chọn <strong>&quot;Skip&quot;</strong> để bỏ qua và tiếp tục
+            • Select <strong>&quot;Skip&quot;</strong> to continue without saving
           </p>
         </div>
 

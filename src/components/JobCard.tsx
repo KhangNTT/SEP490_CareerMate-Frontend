@@ -51,30 +51,33 @@ const JobCard: React.FC<JobCardProps> = ({
   const { Icon, className, label } = getWorkModeUI(workMode);
 
   return (
-    <div className={`bg-card rounded-lg border p-4 mb-4 transition-all ${isSelected ? 'border-[#3a4660] border-l-4 shadow-md bg-muted' : 'border-border hover:shadow-md'
-      }`}>
-      <div className="flex justify-between items-start mb-3">
+    <div className={`bg-white rounded-xl border-2 p-5 transition-all duration-200 ${
+      isSelected 
+        ? 'border-[#3a4660] shadow-lg bg-gradient-to-r from-slate-50 to-blue-50 ring-1 ring-[#3a4660]/20' 
+        : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+    }`}>
+      <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-2">
             {isHot && (
-              <span className="bg-red-600 text-white text-xs px-2 py-1 rounded font-semibold flex items-center gap-1">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <span className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1 shadow-sm">
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"></path>
                 </svg>
                 HOT
               </span>
             )}
-            <h3 className="text-sm font-semibold text-foreground flex-1">{title}</h3>
+            <h3 className="text-base font-semibold text-gray-900 flex-1 leading-tight">{title}</h3>
           </div>
 
-          <div className="flex items-center gap-2 mb-2">
-            <span className="w-4 h-4 bg-[#3a4660] rounded-sm flex-shrink-0"></span>
-            <span className="text-sm font-medium text-muted-foreground">{company}</span>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-5 h-5 bg-gradient-to-br from-[#3a4660] to-slate-500 rounded flex-shrink-0"></span>
+            <span className="text-sm font-medium text-gray-700">{company}</span>
           </div>
 
           {salaryRange && (
-            <div className="mb-2">
-              <span className="salary-badge inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-xs shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+            <div className="mb-3">
+              <span className="salary-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-xs shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">
                 💰 {salaryRange}
               </span>
             </div>
@@ -82,22 +85,22 @@ const JobCard: React.FC<JobCardProps> = ({
         </div>
       </div>
 
-      <div className="space-y-2 mb-3">
+      <div className="space-y-2.5 mb-4">
         {isNegotiable && (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 bg-[#3a4660] rounded-full"></span>
             <span className="text-sm text-[#3a4660] font-medium">Negotiate</span>
           </div>
         )}
 
         {/* ✅ DÙNG BIẾN Icon/label/className ĐÃ TÍNH Ở TRÊN */}
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Icon className={`w-5 h-5 ${className}`} />
-            {label}
+        <div className="flex items-center gap-4 text-sm text-gray-600">
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-50">
+            <Icon className={`w-4 h-4 ${className}`} />
+            <span className="font-medium">{label}</span>
           </span>
-          <span className="flex items-center gap-1">
-            <svg className="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <span className="flex items-center gap-1.5">
+            <svg className="w-4 h-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
@@ -105,20 +108,25 @@ const JobCard: React.FC<JobCardProps> = ({
           </span>
         </div>
 
-        {companyType && <div className="text-sm text-muted-foreground">🏢 {companyType}</div>}
+        {companyType && <div className="text-[13px] text-gray-500">🏢 {companyType}</div>}
       </div>
 
-      <div className="mb-3">
-        <div className="flex flex-wrap gap-1">
-          {skills.map((skill, index) => (
-            <span key={index} className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
+      <div className="mb-4">
+        <div className="flex flex-wrap gap-1.5">
+          {skills.slice(0, 5).map((skill, index) => (
+            <span key={index} className="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-medium">
               {skill}
             </span>
           ))}
+          {skills.length > 5 && (
+            <span className="text-xs bg-gray-100 text-gray-500 px-2.5 py-1 rounded-md">
+              +{skills.length - 5}
+            </span>
+          )}
         </div>
       </div>
 
-      <div className="text-xs text-muted-foreground">Posted {postedAgo}</div>
+      <div className="text-xs text-gray-400 pt-3 border-t border-gray-100">Posted {postedAgo}</div>
     </div>
   );
 };

@@ -85,11 +85,30 @@ const MONTHS = [
   { value: '12', label: 'December' },
 ];
 
-// Generate years from 1990 to current year + 10
+// Generate years from 1976 to 2025 (max year = 2025)
 const YEARS = Array.from({ length: 50 }, (_, i) => {
-  const year = new Date().getFullYear() + 10 - i;
+  const year = 2025 - i;
   return { value: year.toString(), label: year.toString() };
 });
+
+// Degree options for education
+const DEGREE_OPTIONS = [
+  { value: 'College', label: 'College' },
+  { value: 'Bachelor', label: 'Bachelor' },
+  { value: 'Master', label: 'Master' },
+  { value: 'PhD', label: 'PhD' },
+  { value: 'Other', label: 'Other' },
+];
+
+// Language proficiency levels (matching cm-profile LanguageDialog)
+const PROFICIENCY_LEVELS = [
+  { value: 'Beginner', label: 'Beginner' },
+  { value: 'Elementary', label: 'Elementary' },
+  { value: 'Intermediate', label: 'Intermediate' },
+  { value: 'Upper Intermediate', label: 'Upper Intermediate' },
+  { value: 'Advanced', label: 'Advanced' },
+  { value: 'Native', label: 'Native' },
+];
 
 // Experience level options
 const EXPERIENCE_LEVELS = [
@@ -341,12 +360,14 @@ export default function SyncCVSummaryDialog({
                         {/* Degree */}
                         <div>
                           <label className="text-xs text-gray-600 font-medium">Degree <span className="text-red-500">*</span></label>
-                          <Input
+                          <select
                             value={edu.degree || ''}
                             onChange={(e) => updateArrayItem('education', index, 'degree', e.target.value)}
-                            placeholder="e.g., Bachelor of Science"
-                            className="mt-1"
-                          />
+                            className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          >
+                            <option value="">Select degree</option>
+                            {DEGREE_OPTIONS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
+                          </select>
                         </div>
                         {/* Major */}
                         <div>
@@ -960,10 +981,7 @@ export default function SyncCVSummaryDialog({
                           className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <option value="">Select level</option>
-                          <option value="Beginner">Beginner</option>
-                          <option value="Intermediate">Intermediate</option>
-                          <option value="Advanced">Advanced</option>
-                          <option value="Native">Native/Fluent</option>
+                          {PROFICIENCY_LEVELS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
                         </select>
                       </div>
                     </div>

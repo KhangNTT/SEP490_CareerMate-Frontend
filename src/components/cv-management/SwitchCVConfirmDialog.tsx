@@ -47,10 +47,10 @@ export default function SwitchCVConfirmDialog({
 
         <div className="py-4">
           <p className="text-gray-600 mb-2">
-            Bạn đang chỉnh sửa một CV khác. Bạn có muốn chuyển sang CV này không?
+            You are currently editing another CV. Would you like to switch to this CV?
           </p>
           <p className="text-sm text-gray-500">
-            CV hiện tại của bạn đã được lưu tự động.
+            Your current CV has been auto-saved.
           </p>
         </div>
 

@@ -183,36 +183,31 @@ export default function ProfileStrengthSidebar({
                             </button>
                         ))}
 
-                        {/* More Fields Section */}
-                        {hasSecondaryItems && (
-                            <div>
-                                <button
-                                    onClick={() => onToggleSection("more")}
-                                    className="w-full flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium transition-colors text-sm"
-                                >
-                                    {isExpanded ? (
-                                        <ChevronUp className="w-4 h-4" />
-                                    ) : (
-                                        <ChevronDown className="w-4 h-4" />
-                                    )}
-                                    <span>{isExpanded ? "Show less" : "Add more information"}</span>
-                                </button>
+                        {/* Secondary Items (when expanded) */}
+                        {isExpanded && secondaryItems.map((item) => (
+                            <button
+                                key={item.key}
+                                onClick={item.onClick}
+                                className="w-full text-left flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+                            >
+                                <Plus className="w-4 h-4" />
+                                <span>{item.label}</span>
+                            </button>
+                        ))}
 
-                                {isExpanded && (
-                                    <div className="mt-3 ml-6 space-y-3">
-                                        {secondaryItems.map((item) => (
-                                            <button
-                                                key={item.key}
-                                                onClick={item.onClick}
-                                                className="w-full text-left flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
-                                            >
-                                                <Plus className="w-4 h-4" />
-                                                <span>{item.label}</span>
-                                            </button>
-                                        ))}
-                                    </div>
+                        {/* Show More/Less Toggle - Always at bottom */}
+                        {hasSecondaryItems && (
+                            <button
+                                onClick={() => onToggleSection("more")}
+                                className="w-full flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium transition-colors text-sm"
+                            >
+                                {isExpanded ? (
+                                    <ChevronUp className="w-4 h-4" />
+                                ) : (
+                                    <ChevronDown className="w-4 h-4" />
                                 )}
-                            </div>
+                                <span>{isExpanded ? "Show less" : "Add more information"}</span>
+                            </button>
                         )}
                     </div>
                 )}

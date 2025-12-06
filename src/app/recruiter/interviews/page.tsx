@@ -16,7 +16,9 @@ import {
   RotateCcw,
   Mail,
   User,
-  UserX
+  UserX,
+  Briefcase,
+  ExternalLink
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -292,8 +294,23 @@ export default function RecruiterInterviewsPage() {
                         {interview.candidateName || 'Unknown Candidate'}
                       </span>
                       {(interview.jobTitle || interview.positionTitle) && (
-                        <span className="text-xs">
-                          Position: {interview.jobTitle || interview.positionTitle}
+                        <span className="flex items-center gap-1.5 text-xs">
+                          <Briefcase className="h-3 w-3 text-muted-foreground" />
+                          <span>Applying for: </span>
+                          {interview.jobId ? (
+                            <a
+                              href={`/jobs-detail?id=${interview.jobId}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline font-medium inline-flex items-center gap-1"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {interview.jobTitle || interview.positionTitle}
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                          ) : (
+                            <span className="font-medium">{interview.jobTitle || interview.positionTitle}</span>
+                          )}
                         </span>
                       )}
                     </CardDescription>
