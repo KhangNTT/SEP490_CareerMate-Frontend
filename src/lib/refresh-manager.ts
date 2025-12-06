@@ -80,14 +80,11 @@ async function doActualRefresh(): Promise<string | null> {
 
     // Extract user info from JWT
     const userInfo = decoded ? {
-      id: decoded.userId || decoded.sub || null,
+      id: decoded.sub || null,
       email: decoded.email || null,
-      name: decoded.fullname || decoded.name || decoded.email || null,
+      name: decoded.name || decoded.email || null,
       username: decoded.username || null,
     } : null;
-
-    // ✅ Extract candidateId directly from JWT (preferred)
-    const tokenCandidateId = decoded?.candidateId || null;
 
     // Update localStorage
     if (typeof window !== "undefined") {
@@ -100,25 +97,22 @@ async function doActualRefresh(): Promise<string | null> {
       console.debug("✅ [unifiedRefresh] Token refreshed and stored in localStorage AND cookies");
     }
 
-    // Update Zustand store with candidateId from JWT
+    // Update Zustand store
     useAuthStore.setState({
       accessToken,
       tokenExpiresAt: expiresAt,
       isAuthenticated: true,
       role,
       user: userInfo,
-      ...(tokenCandidateId ? { candidateId: tokenCandidateId } : {}),
     });
 
-    console.debug(`✅ [RefreshManager] Token refreshed successfully (expires in ${expiresIn}s, candidateId: ${tokenCandidateId})`);
+    console.debug(`✅ [RefreshManager] Token refreshed successfully (expires in ${expiresIn}s)`);
 
-    // Only fetch profile if candidateId not in token (fallback)
-    if (!tokenCandidateId) {
-      const { fetchCandidateProfile } = useAuthStore.getState();
-      fetchCandidateProfile().catch(() => {
-        console.debug("⚠️ [RefreshManager] Profile fetch failed (non-critical)");
-      });
-    }
+    // Fetch user profile asynchronously (non-blocking)
+    const { fetchCandidateProfile } = useAuthStore.getState();
+    fetchCandidateProfile().catch(() => {
+      console.debug("⚠️ [RefreshManager] Profile fetch failed (non-critical)");
+    });
 
     return accessToken;
   } catch (error: any) {

@@ -3,10 +3,12 @@
  * 
  * Polls the status of an export job by job ID.
  * Returns the current status, and fileUrl when complete.
+ * 
+ * Now uses Vercel KV for persistent job storage across serverless functions.
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { exportJobStore } from "@/lib/export-job-store";
+import { exportJobStore } from "@/lib/export-job-store.kv";
 import type { GetExportJobResponse } from "@/types/export-job";
 
 // =============================================================================
@@ -34,8 +36,8 @@ export async function GET(
       );
     }
 
-    // Look up job in store
-    const job = exportJobStore.getJob(jobId);
+    // Look up job in store (now async with KV)
+    const job = await exportJobStore.getJob(jobId);
 
     if (!job) {
       return NextResponse.json(

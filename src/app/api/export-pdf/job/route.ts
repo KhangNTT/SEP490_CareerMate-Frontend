@@ -6,10 +6,12 @@
  * 
  * This replaces the old retry-based approach with a job-based polling system
  * that handles Puppeteer cold-start times gracefully.
+ * 
+ * Now uses Vercel KV for persistent job storage across serverless functions.
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { exportJobStore } from "@/lib/export-job-store";
+import { exportJobStore } from "@/lib/export-job-store.kv";
 import { generatePDF } from "@/lib/pdf-export-worker";
 import { uploadCVPDF } from "@/lib/firebase-upload";
 import type { CreateExportJobRequest, CreateExportJobResponse } from "@/types/export-job";
@@ -30,7 +32,7 @@ export async function POST(req: NextRequest) {
   try {
     // Parse request body
     const body: CreateExportJobRequest = await req.json();
-    const { resumeId, templateId, cvData, fileName, userPackage, candidateId } = body;
+    const { resumeId, templateId, cvData, fileName, userPackage, userId } = body;
 
     // Validate required fields
     if (!resumeId) {
@@ -54,8 +56,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create job in store
-    const job = exportJobStore.createJob(resumeId, templateId);
+    // Create job in store (now async with KV)
+    const job = await exportJobStore.createJob(resumeId, templateId);
     const { jobId } = job;
 
     console.log(`[ExportJob] Created job ${jobId} for resume ${resumeId}`);
@@ -81,7 +83,7 @@ export async function POST(req: NextRequest) {
 
         if (!result.success) {
           console.error(`[ExportJob] PDF generation failed for job ${jobId}:`, result.error);
-          exportJobStore.failJob(jobId, result.error);
+          await exportJobStore.failJob(jobId, result.error);
           return;
         }
 
@@ -93,24 +95,21 @@ export async function POST(req: NextRequest) {
         // Convert Buffer to Blob for uploadCVPDF
         const pdfBlob = new Blob([new Uint8Array(result.pdfBuffer)], { type: "application/pdf" });
         const cleanFileName = fileName || `cv-${resumeId}`;
-        
-        // Use candidateId for Firebase path (NOT email)
-        // Path: careermate-files/candidates/{candidateId}/cv/{fileName}
-        const uploadCandidateId = candidateId || "anonymous";
+        const uploadUserId = userId || "anonymous";
 
-        const downloadURL = await uploadCVPDF(uploadCandidateId, pdfBlob, cleanFileName);
+        const downloadURL = await uploadCVPDF(uploadUserId, pdfBlob, cleanFileName);
 
         console.log(`[ExportJob] Upload complete for job ${jobId}: ${downloadURL.substring(0, 60)}...`);
 
-        // Step 3: Mark job as complete
-        exportJobStore.completeJob(jobId, downloadURL);
+        // Step 3: Mark job as complete (now async with KV)
+        await exportJobStore.completeJob(jobId, downloadURL);
 
         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
         console.log(`[ExportJob] Job ${jobId} completed successfully in ${duration}s`);
 
       } catch (error: any) {
         console.error(`[ExportJob] Background processing failed for job ${jobId}:`, error);
-        exportJobStore.failJob(jobId, error.message || "Unknown error during export");
+        await exportJobStore.failJob(jobId, error.message || "Unknown error during export");
       }
     });
 
@@ -139,15 +138,16 @@ export async function POST(req: NextRequest) {
 }
 
 // =============================================================================
-// GET Handler - Store Statistics (for debugging/monitoring)
+// GET Handler - Health Check
 // =============================================================================
 
 export async function GET() {
-  const stats = exportJobStore.getStoreStats();
-  
+  // KV-based store doesn't support getAllJobs/getStoreStats
+  // Return basic health check instead
   return NextResponse.json({
     service: "PDF Export Job API",
-    stats,
+    status: "operational",
+    storage: "Vercel KV",
     timestamp: new Date().toISOString(),
   });
 }

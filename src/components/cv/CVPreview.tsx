@@ -436,16 +436,6 @@ export default function CVPreview({
   // Get user from auth store
   const { user, candidateId } = useAuthStore();
   
-  // Debug: Log candidateId status
-  useEffect(() => {
-    console.log("🔍 [CVPreview] Auth state:", { 
-      candidateId, 
-      hasUser: !!user,
-      userId: user?.id,
-      userEmail: user?.email 
-    });
-  }, [candidateId, user]);
-  
   // Get resumeId from store if not passed as prop
   const storeResumeId = useCVStore((state) => state.currentEditingResumeId);
   const resumeId = propResumeId ?? (storeResumeId ? Number(storeResumeId) : undefined);
@@ -770,34 +760,17 @@ export default function CVPreview({
 
   // Export PDF using Job-based polling approach and save to Firebase
   // This replaces the old retry-based downloadCVWithRetry approach
-  const handleExportAndSavePDF = async () => {
+  const handleExportAndSavePDF = async (userId?: string) => {
     if (isDownloading || isJobExporting) return;
 
-    // Get fresh candidateId from store (may have been updated since render)
-    let effectiveCandidateId = candidateId || useAuthStore.getState().candidateId;
-    
-    // If still no candidateId, try fetching it
-    if (!effectiveCandidateId) {
-      toast.loading("Đang tải thông tin người dùng...", { id: "loading-profile" });
-      try {
-        await useAuthStore.getState().fetchCandidateProfile();
-        effectiveCandidateId = useAuthStore.getState().candidateId;
-        toast.dismiss("loading-profile");
-      } catch (err) {
-        toast.error("Không thể tải thông tin người dùng", { id: "loading-profile" });
-        return;
-      }
-    }
-
-    // Final check - candidateId is required for Firebase path
-    if (!effectiveCandidateId) {
-      toast.error("Bạn cần đăng nhập để lưu CV");
+    // Check userId (user must be logged in)
+    if (!userId) {
+      toast.error("Please log in to save your CV");
       return;
     }
 
     // Debug: Check if cvData is valid before export
-    console.log("🔍 Export started with:", {
-      candidateId: effectiveCandidateId,
+    console.log("🔍 Export started with cvData:", {
       fullName: cvData.personalInfo?.fullName,
       email: cvData.personalInfo?.email,
       hasExperience: cvData.experience?.length || 0,
@@ -911,14 +884,13 @@ export default function CVPreview({
       // ========================================
       console.log("🚀 Starting job-based PDF export...");
       
-      // Use effectiveCandidateId for Firebase path (NOT email)
       const downloadURL = await startExport({
         resumeId: resumeId || 0,
         templateId: templateId,
         cvData: printData,
         fileName: fileName,
         userPackage: userPackage,
-        candidateId: effectiveCandidateId?.toString(), // Use candidateId for Firebase path
+        userId: userId,
       });
 
       if (!downloadURL) {
@@ -959,29 +931,13 @@ export default function CVPreview({
       toast.success("CV saved successfully!", { id: loadingToast });
 
       // Trigger download from the Firebase URL
-      // Use fetch to download blob and trigger native download
-      try {
-        console.log("📥 Starting PDF download...");
-        const response = await fetch(downloadURL);
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = `${fileName}.pdf`;
-        link.style.display = "none";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // Clean up blob URL after download
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-        console.log("✅ PDF download triggered successfully");
-      } catch (downloadError) {
-        console.warn("⚠️ Could not auto-download PDF, opening in new tab:", downloadError);
-        // Fallback: open in new tab
-        window.open(downloadURL, "_blank");
-      }
+      const link = document.createElement("a");
+      link.href = downloadURL;
+      link.download = `${fileName}.pdf`;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       return downloadURL;
     } catch (error) {
@@ -3167,23 +3123,17 @@ export default function CVPreview({
             {/* Save to Firebase Button */}
             <button
               onClick={() => {
-                // Use candidateId from store, or fallback to user authentication check
-                const effectiveCandidateId = candidateId;
-                if (!effectiveCandidateId && !user) {
+                // Get userId from auth store
+                const userId = candidateId?.toString() || user?.id?.toString();
+                if (!userId) {
                   toast.error("Bạn cần đăng nhập để lưu CV");
                   return;
                 }
-                if (!effectiveCandidateId) {
-                  toast.error("Đang tải thông tin người dùng, vui lòng thử lại...");
-                  // Try to fetch candidateId again
-                  useAuthStore.getState().fetchCandidateProfile();
-                  return;
-                }
-                handleExportAndSavePDF();
+                handleExportAndSavePDF(userId);
               }}
-              disabled={!isMounted || isDownloading || (!candidateId && !user)}
+              disabled={!isMounted || isDownloading || !user}
               className="px-3 py-2 border border-green-400 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              title={!isMounted || !user ? "Đăng nhập để lưu CV" : !candidateId ? "Đang tải..." : "Export PDF and save to Firebase Storage"}
+              title={!isMounted || !user ? "Đăng nhập để lưu CV" : "Export PDF and save to Firebase Storage"}
             >
               {isDownloading ? (
                 <>

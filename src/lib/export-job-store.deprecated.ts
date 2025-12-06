@@ -1,14 +1,22 @@
 /**
- * Export Job Store
+ * ⚠️⚠️⚠️ DEPRECATED - DO NOT USE ⚠️⚠️⚠️
  * 
- * In-memory job store for managing PDF export jobs.
- * Uses globalThis to persist data across serverless function invocations.
+ * This file is deprecated and has been replaced by export-job-store.kv.ts
  * 
- * IMPORTANT: This uses globalThis pattern to work around Next.js serverless
- * limitations where each API request may run in a fresh instance.
- * For production at scale, consider using Redis or a database.
+ * Export Job Store (In-Memory) - DEPRECATED
  * 
- * Jobs are automatically cleaned up after 10 minutes to prevent memory leaks.
+ * This in-memory job store using globalThis does NOT work correctly
+ * on Vercel's serverless infrastructure because:
+ * 
+ * ❌ Different Lambda instances don't share memory
+ * ❌ Job created in one instance may not be visible in another
+ * ❌ Causes "Job not found" errors in production
+ * 
+ * MIGRATION:
+ * This has been replaced by Vercel KV implementation in export-job-store.kv.ts
+ * See VERCEL_KV_SETUP.md for setup instructions.
+ * 
+ * This file is kept for reference only. Do not import or use it.
  */
 
 import { ExportJobState } from "@/types/export-job";

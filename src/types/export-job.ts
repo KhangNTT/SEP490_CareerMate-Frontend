@@ -66,8 +66,8 @@ export interface CreateExportJobRequest {
   /** User's subscription package (affects watermark) */
   userPackage?: string;
   
-  /** Candidate ID for Firebase upload path (NOT email) */
-  candidateId?: string;
+  /** User ID for Firebase upload path */
+  userId?: string;
 }
 
 /**
