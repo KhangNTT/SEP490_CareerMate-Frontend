@@ -1059,12 +1059,26 @@ export default function CVPreview({
       return downloadURL;
     } catch (error) {
       console.error("❌ Error exporting and saving PDF:", error);
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Could not export CV. Please try again.",
-        { id: loadingToast }
-      );
+      
+      // Extract meaningful error message
+      let errorMessage = "Could not export CV. Please try again.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        
+        // Provide more user-friendly messages for known errors
+        if (error.message.includes("chromium") || error.message.includes("Chromium")) {
+          errorMessage = "PDF service temporarily unavailable. Please try again in a few minutes.";
+        } else if (error.message.includes("PDF export failed")) {
+          errorMessage = "PDF generation failed on server. Our team has been notified.";
+        } else if (error.message.includes("timeout") || error.message.includes("Timeout")) {
+          errorMessage = "Export timed out. Please try again with a simpler CV or fewer images.";
+        }
+      }
+      
+      toast.error(errorMessage, { 
+        id: loadingToast,
+        duration: 6000 
+      });
     } finally {
       setIsDownloading(false);
     }
