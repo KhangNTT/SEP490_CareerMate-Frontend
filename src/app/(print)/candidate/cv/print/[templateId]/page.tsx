@@ -146,16 +146,22 @@ function normalizeCVData(rawData: any): CVData {
   
   const personalInfo = hasPersonalInfo ? rawData.personalInfo : rawData;
   
+  // ========================================
+  // ✅ FIX: Handle photoUrl from multiple sources
+  // Priority: rawData.photoUrl (ExportCVData flat) > personalInfo.photoUrl (nested)
+  // ========================================
+  const resolvedPhotoUrl = rawData.photoUrl || personalInfo.photoUrl || '';
+  
   return {
     // Personal Info - handle both flat and nested structures
-    fullName: personalInfo.fullName || rawData.fullName || '',
+    fullName: personalInfo.fullName || rawData.name || rawData.fullName || '',
     title: personalInfo.position || personalInfo.title || rawData.title || '',
     email: personalInfo.email || rawData.email || '',
     phone: personalInfo.phone || rawData.phone || '',
     address: personalInfo.location || personalInfo.address || rawData.address || '',
     website: personalInfo.website || personalInfo.link || rawData.website || '',
     linkedin: personalInfo.linkedin || rawData.linkedin || '', // Personal link from CVPreview
-    photoUrl: personalInfo.photoUrl || rawData.photoUrl || '',
+    photoUrl: resolvedPhotoUrl,
     dob: personalInfo.dob || rawData.dob || '',
     gender: personalInfo.gender || rawData.gender || '',
     summary: personalInfo.summary || rawData.summary || '',
