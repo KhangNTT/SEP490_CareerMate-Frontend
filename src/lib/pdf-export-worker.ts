@@ -8,6 +8,7 @@
  * Used by the background job processor to generate PDFs asynchronously.
  */
 
+import path from "path";
 import { ExportCVData } from "@/types/export-job";
 
 // =============================================================================
@@ -143,9 +144,25 @@ export async function generatePDF(params: PDFGenerationParams): Promise<PDFGener
       const chromium = (await import("@sparticuz/chromium")).default;
       
       // ========================================
-      // ✅ FIX: Properly configure chromium for serverless
+      // ✅ FIX: Explicitly resolve chromium bin directory
+      // This ensures Next.js file-tracing includes the brotli files
       // ========================================
       console.log("🔧 Configuring Chromium for serverless environment...");
+      
+      // Resolve chromium bin path explicitly (must match outputFileTracingIncludes)
+      const chromiumBin = path.join(process.cwd(), "node_modules", "@sparticuz", "chromium", "bin");
+      console.log("📁 Chromium bin directory:", chromiumBin);
+      
+      // Check if directory exists (fail fast if not bundled)
+      const fs = require("fs");
+      if (!fs.existsSync(chromiumBin)) {
+        throw new Error(
+          `Chromium bin directory not found: ${chromiumBin}\n` +
+          `This means Next.js file-tracing didn't include the brotli files.\n` +
+          `Check next.config.ts outputFileTracingIncludes configuration.`
+        );
+      }
+      console.log("✅ Chromium bin directory exists");
       
       try {
         // Set font config to prevent font loading issues
@@ -157,18 +174,15 @@ export async function generatePDF(params: PDFGenerationParams): Promise<PDFGener
         console.warn("⚠️ Font configuration failed (non-critical):", fontError.message);
       }
       
-      // Get executable path with proper tmp directory
+      // Get executable path using explicit bin directory
       let execPath;
       try {
-        // Try /tmp first (standard Lambda path)
-        // If CHROMIUM_PATH env var is set, use that instead
-        const tmpDir = process.env.CHROMIUM_PATH || "/tmp";
-        execPath = await chromium.executablePath(tmpDir);
-        console.log("✅ Chromium executable path resolved:", execPath.substring(0, 50) + "...");
-        console.log("📁 Using temp directory:", tmpDir);
+        execPath = await chromium.executablePath(chromiumBin);
+        console.log("✅ Chromium executable path resolved:", execPath.substring(0, 80) + "...");
       } catch (pathError: any) {
         console.error("❌ Failed to resolve chromium executable path:", pathError.message);
-        console.log("💡 Tip: Set CHROMIUM_PATH env var if /tmp is not writable");
+        console.log("💡 Bin directory:", chromiumBin);
+        console.log("💡 Check that brotli files were bundled by Next.js file-tracing");
         throw new Error(`Chromium setup failed: ${pathError.message}`);
       }
       

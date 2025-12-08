@@ -5,7 +5,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   outputFileTracingRoot: __dirname,
 
   // ========================================
@@ -76,6 +76,20 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-label",
       "@radix-ui/react-slot",
     ],
+    // ========================================
+    // ✅ FIX: Mark packages as external for serverless
+    // ========================================
+    serverComponentsExternalPackages: ['@sparticuz/chromium', 'puppeteer-core'],
+  },
+
+  // ========================================
+  // ✅ FIX: Force include chromium binary files in Lambda
+  // ========================================
+  outputFileTracingIncludes: {
+    '/api/export-pdf': ['./node_modules/@sparticuz/chromium/bin/**'],
+    '/api/export-pdf/job': ['./node_modules/@sparticuz/chromium/bin/**'],
+    '/api/export-pdf/job/[jobId]': ['./node_modules/@sparticuz/chromium/bin/**'],
+    '/candidate/cv/api/export-pdf': ['./node_modules/@sparticuz/chromium/bin/**'],
   },
 
   // Reduce bundle size
@@ -84,6 +98,6 @@ const nextConfig: NextConfig = {
       transform: "lucide-react/dist/esm/icons/{{kebabCase member}}",
     },
   },
-};
+} satisfies NextConfig;
 
 export default withBundleAnalyzer(nextConfig);
