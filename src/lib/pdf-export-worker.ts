@@ -142,16 +142,58 @@ export async function generatePDF(params: PDFGenerationParams): Promise<PDFGener
       const puppeteerCore = require("puppeteer-core");
       const chromium = (await import("@sparticuz/chromium")).default;
       
+      // ========================================
+      // ✅ FIX: Properly configure chromium for serverless
+      // ========================================
+      console.log("🔧 Configuring Chromium for serverless environment...");
+      
+      try {
+        // Set font config to prevent font loading issues
+        await chromium.font(
+          "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
+        );
+        console.log("✅ Font configured");
+      } catch (fontError: any) {
+        console.warn("⚠️ Font configuration failed (non-critical):", fontError.message);
+      }
+      
+      // Get executable path with proper tmp directory
+      let execPath;
+      try {
+        // Try /tmp first (standard Lambda path)
+        // If CHROMIUM_PATH env var is set, use that instead
+        const tmpDir = process.env.CHROMIUM_PATH || "/tmp";
+        execPath = await chromium.executablePath(tmpDir);
+        console.log("✅ Chromium executable path resolved:", execPath.substring(0, 50) + "...");
+        console.log("📁 Using temp directory:", tmpDir);
+      } catch (pathError: any) {
+        console.error("❌ Failed to resolve chromium executable path:", pathError.message);
+        console.log("💡 Tip: Set CHROMIUM_PATH env var if /tmp is not writable");
+        throw new Error(`Chromium setup failed: ${pathError.message}`);
+      }
+      
       browser = await puppeteerCore.launch({
-        args: chromium.args,
+        args: [
+          ...chromium.args,
+          "--disable-gpu",
+          "--disable-dev-shm-usage",
+          "--disable-setuid-sandbox",
+          "--no-first-run",
+          "--no-sandbox",
+          "--no-zygote",
+          "--single-process",
+        ],
         defaultViewport: { 
           width: 794, 
           height: 1123,
           deviceScaleFactor: 1,
         },
-        executablePath: await chromium.executablePath(),
-        headless: true,
+        executablePath: execPath,
+        headless: true, // Always headless in production
+        ignoreHTTPSErrors: true,
       });
+      
+      console.log("✅ Chromium browser launched in serverless mode");
     }
 
     console.log("✅ Browser launched successfully");
