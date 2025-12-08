@@ -139,75 +139,135 @@ export async function generatePDF(params: PDFGenerationParams): Promise<PDFGener
         },
       });
     } else {
-      // Production - Use puppeteer-core + @sparticuz/chromium for serverless
+      // Production - Handle different environments (Vercel/Railway/Docker)
       const puppeteerCore = require("puppeteer-core");
-      const chromium = (await import("@sparticuz/chromium")).default;
       
-      // ========================================
-      // ✅ FIX: Explicitly resolve chromium bin directory
-      // This ensures Next.js file-tracing includes the brotli files
-      // ========================================
-      console.log("🔧 Configuring Chromium for serverless environment...");
+      console.log("🔧 Configuring Chromium for production environment...");
       
-      // Resolve chromium bin path explicitly (must match outputFileTracingIncludes)
-      const chromiumBin = path.join(process.cwd(), "node_modules", "@sparticuz", "chromium", "bin");
-      console.log("📁 Chromium bin directory:", chromiumBin);
+      // Check for Railway/Docker environment with system Chromium
+      const systemChromiumPath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROMIUM_PATH;
       
-      // Check if directory exists (fail fast if not bundled)
-      const fs = require("fs");
-      if (!fs.existsSync(chromiumBin)) {
-        throw new Error(
-          `Chromium bin directory not found: ${chromiumBin}\n` +
-          `This means Next.js file-tracing didn't include the brotli files.\n` +
-          `Check next.config.ts outputFileTracingIncludes configuration.`
-        );
+      if (systemChromiumPath) {
+        // Railway/Docker: Use system-installed Chromium
+        console.log("📁 Using system Chromium at:", systemChromiumPath);
+        
+        // Verify chromium exists
+        const fs = require("fs");
+        if (!fs.existsSync(systemChromiumPath)) {
+          throw new Error(`System Chromium not found at: ${systemChromiumPath}`);
+        }
+        
+        browser = await puppeteerCore.launch({
+          args: [
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--disable-setuid-sandbox",
+            "--no-first-run",
+            "--no-sandbox",
+            "--no-zygote",
+            "--single-process",
+          ],
+          defaultViewport: { 
+            width: 794, 
+            height: 1123,
+            deviceScaleFactor: 1,
+          },
+          executablePath: systemChromiumPath,
+          headless: true,
+          ignoreHTTPSErrors: true,
+        });
+        
+        console.log("✅ Chromium browser launched (system binary)");
+      } else {
+        // Vercel/AWS Lambda: Use @sparticuz/chromium
+        const chromium = (await import("@sparticuz/chromium")).default;
+        const fs = require("fs");
+        
+        // ========================================
+        // ✅ FIX: Try multiple possible bin paths for Vercel
+        // ========================================
+        const possibleBinPaths = [
+          path.join(process.cwd(), "node_modules", "@sparticuz", "chromium", "bin"),
+          path.join("/var/task", "node_modules", "@sparticuz", "chromium", "bin"),
+          path.join(__dirname, "..", "..", "node_modules", "@sparticuz", "chromium", "bin"),
+          "/var/task/.next/server/node_modules/@sparticuz/chromium/bin",
+        ];
+        
+        let chromiumBin: string | null = null;
+        for (const binPath of possibleBinPaths) {
+          console.log(`🔍 Checking chromium bin path: ${binPath}`);
+          if (fs.existsSync(binPath)) {
+            chromiumBin = binPath;
+            console.log(`✅ Found chromium bin at: ${binPath}`);
+            break;
+          }
+        }
+        
+        if (!chromiumBin) {
+          console.error("❌ Chromium bin not found in any expected location:");
+          possibleBinPaths.forEach(p => console.error(`   - ${p}`));
+          console.error("📁 Current working directory:", process.cwd());
+          console.error("📁 __dirname:", __dirname);
+          
+          // List directory contents for debugging
+          try {
+            const cwdContents = fs.readdirSync(process.cwd());
+            console.error("📂 CWD contents:", cwdContents.slice(0, 20));
+          } catch (e) {
+            console.error("❌ Cannot list CWD");
+          }
+          
+          throw new Error(
+            `Chromium bin directory not found in any expected location.\n` +
+            `Check next.config.ts outputFileTracingIncludes configuration.\n` +
+            `CWD: ${process.cwd()}`
+          );
+        }
+        
+        try {
+          // Set font config to prevent font loading issues
+          await chromium.font(
+            "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
+          );
+          console.log("✅ Font configured");
+        } catch (fontError: any) {
+          console.warn("⚠️ Font configuration failed (non-critical):", fontError.message);
+        }
+        
+        // Get executable path using found bin directory
+        let execPath;
+        try {
+          execPath = await chromium.executablePath(chromiumBin);
+          console.log("✅ Chromium executable path resolved:", execPath.substring(0, 80) + "...");
+        } catch (pathError: any) {
+          console.error("❌ Failed to resolve chromium executable path:", pathError.message);
+          console.log("💡 Bin directory:", chromiumBin);
+          throw new Error(`Chromium setup failed: ${pathError.message}`);
+        }
+        
+        browser = await puppeteerCore.launch({
+          args: [
+            ...chromium.args,
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--disable-setuid-sandbox",
+            "--no-first-run",
+            "--no-sandbox",
+            "--no-zygote",
+            "--single-process",
+          ],
+          defaultViewport: { 
+            width: 794, 
+            height: 1123,
+            deviceScaleFactor: 1,
+          },
+          executablePath: execPath,
+          headless: true,
+          ignoreHTTPSErrors: true,
+        });
+        
+        console.log("✅ Chromium browser launched (@sparticuz/chromium)");
       }
-      console.log("✅ Chromium bin directory exists");
-      
-      try {
-        // Set font config to prevent font loading issues
-        await chromium.font(
-          "https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf"
-        );
-        console.log("✅ Font configured");
-      } catch (fontError: any) {
-        console.warn("⚠️ Font configuration failed (non-critical):", fontError.message);
-      }
-      
-      // Get executable path using explicit bin directory
-      let execPath;
-      try {
-        execPath = await chromium.executablePath(chromiumBin);
-        console.log("✅ Chromium executable path resolved:", execPath.substring(0, 80) + "...");
-      } catch (pathError: any) {
-        console.error("❌ Failed to resolve chromium executable path:", pathError.message);
-        console.log("💡 Bin directory:", chromiumBin);
-        console.log("💡 Check that brotli files were bundled by Next.js file-tracing");
-        throw new Error(`Chromium setup failed: ${pathError.message}`);
-      }
-      
-      browser = await puppeteerCore.launch({
-        args: [
-          ...chromium.args,
-          "--disable-gpu",
-          "--disable-dev-shm-usage",
-          "--disable-setuid-sandbox",
-          "--no-first-run",
-          "--no-sandbox",
-          "--no-zygote",
-          "--single-process",
-        ],
-        defaultViewport: { 
-          width: 794, 
-          height: 1123,
-          deviceScaleFactor: 1,
-        },
-        executablePath: execPath,
-        headless: true, // Always headless in production
-        ignoreHTTPSErrors: true,
-      });
-      
-      console.log("✅ Chromium browser launched in serverless mode");
     }
 
     console.log("✅ Browser launched successfully");

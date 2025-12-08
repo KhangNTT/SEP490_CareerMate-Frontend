@@ -83,7 +83,14 @@ export async function POST(req: NextRequest) {
 
         if (!result.success) {
           console.error(`[ExportJob] PDF generation failed for job ${jobId}:`, result.error);
-          await exportJobStore.failJob(jobId, result.error);
+          console.error(`[ExportJob] Error details:`, result.details || "No details available");
+          
+          // Include more helpful error message for debugging
+          const errorMessage = result.error?.includes("chromium") 
+            ? `Chromium setup failed: ${result.error}. Please check server configuration.`
+            : result.error;
+          
+          await exportJobStore.failJob(jobId, errorMessage);
           return;
         }
 
